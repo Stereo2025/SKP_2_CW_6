@@ -1,0 +1,23 @@
+{%extends 'mailing/base.html' %}
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <br />
+    <h4>
+        Удалить статью
+    </h4>
+</div>
+<main>
+    <div class="card">
+        <div class="card-body">
+            <div class="col-md-7 col-lg-8">
+              <form enctype="multipart/form-data" class="needs-validation" method="post">
+                {% csrf_token %}
+                <p>Хотите удалить статью {{object.title}}?</p>
+                <button type="submit" class="btn btn-danger">Подтвердить</button>
+                <a href="{% url 'blogs:articles' %}" class="btn btn-warning">Отмена</a>
+              </form>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

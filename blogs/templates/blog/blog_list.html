@@ -1,0 +1,45 @@
+{%extends 'mailing/base.html' %}
+{% load tags %}
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <br/>
+    <h4>Статьи</h4>
+</div>
+<div class="col-12 mb-5">
+    <a class="btn btn-outline-primary" href="{% url 'blogs:create' %}">Добавить статью</a>
+</div>
+{% for item in object_list %}
+<div class="row mb-2">
+    <div class="col-md-8">
+        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col-auto d-none d-lg-block">
+                <img src="{% mediapath item.image %}" width="200" height="250" class="bd-placeholder-img"
+                     alt="{{product.title}}">
+            </div>
+            <div class="col p-4 d-flex flex-column position-static">
+                <strong class="d-inline-block mb-2 text-primary-emphasis">{{item.date_added}}</strong>
+                <h3 class="mb-0">{{item.title}}</h3>
+                <div class="mb-1 text-body-secondary">{{item.views_count}} просмотров</div>
+                <p class="card-text mb-auto">{{item.content|slice:100}}...</p>
+                <div class="row">
+                    <div class="col-6">
+                        <a href="{% url 'blogs:view' item.slug %}"
+                           class="icon-link gap-1 icon-link-hover stretched-link">
+                            Читать далее
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        {% if item.user == user or perms.blog.change_blog %}
+                        <div class="btn-group">
+                            <a type="button" class="btn btn-outline-primary" href="{% url 'blogs:update' item.slug %}">Редактировать</a>
+                            <a type="button" class="btn btn-outline-danger" href="{% url 'blogs:delete' item.slug %}">Удалить</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

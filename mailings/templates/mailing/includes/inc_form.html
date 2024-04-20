@@ -1,0 +1,23 @@
+<div class="card">
+    <div class="card-title">
+        <div class="card-header"></div>
+    </div>
+    <div class="card-body">
+        <div class="col-md-7 col-lg-8">
+            <form enctype="multipart/form-data" class="needs-validation" method="post">
+                {% csrf_token %}
+                <table>
+                    {{ form.as_table }}
+                </table>
+                <button type="submit" class="btn btn-success">
+                    {% if object %}
+                    Сохранить
+                    {% else %}
+                    Создать
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+    <div class="card-footer"></div>
+</div>

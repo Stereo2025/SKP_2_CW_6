@@ -1,0 +1,22 @@
+{%extends 'mailing/base.html' %}
+{% load tags %}
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <br />
+    <h4>{{object.title}}</h4>
+</div>
+<div class="col-12">
+  <div class="row">
+    <div class="col-8">
+        <img src="{% mediapath object.image %}" width="200" height="250" class="bd-placeholder-img" alt="{{product.title}}">
+        <span class="d-flex align-items-center ms-3">
+            {{object.date_added}}
+        </span>
+        <div class="d-flex align-items-center mb-4 text-muted author-info">
+            <span>{{object.views_count}} просмотров</span>
+        </div>
+        <p>{{object.content}}</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

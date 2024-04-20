@@ -1,0 +1,119 @@
+{%extends 'mailing/base.html' %}
+{% load tags %}
+{% block content %}
+<div class="container py-3">
+    <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-left">
+        <h1 class="display-4">Добро пожаловать в YourMailPro</h1>
+        <p class="lead">Ваше решение для эффективных рассылок по электронной почте!</p>
+
+        <p><strong>Откройте для себя все преимущества нашего сервиса:</strong></p>
+        <ul>
+            <li><strong>Создание целевой аудитории:</strong> создайте свою клиентскую базу для точного таргетинга ваших
+                рассылок.
+            </li>
+            <li><strong>Полное управление сообщениями:</strong> создавайте персонализированные письма, которые привлекут
+                внимание ваших клиентов.
+            </li>
+            <li><strong>Анализ результатов:</strong> отслеживайте статистику доставки и эффективность каждой рассылки в
+                режиме реального времени.
+            </li>
+        </ul>
+
+        <p><strong>Начать работу с нами просто:</strong></p>
+        <ol>
+            <li>Добавляйте своих клиентов в базу данных через удобный интерфейс.</li>
+            <li>Создайте персонализированное сообщение с помощью нашего простого редактора.</li>
+            <li>Запустите рассылку и наблюдайте за реакцией клиентов в режиме реального времени.</li>
+        </ol>
+
+        <p>YourMailPro поможет вам максимально эффективно донести информацию до вашей аудитории. Вместе мы сделаем ваше
+            общение проще и плодотворнее!</p>
+    </div>
+    <main>
+        <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm">
+                    <div class="card-header py-3">
+                        <h2 class="my-0 fw-normal">Клиенты</h2>
+                    </div>
+                    <div class="card-body">
+                        <h4>Количество ваших уникальных клиентов - {{clients_count}}</h4>
+                    </div>
+                    <div class="card-footer">
+                        <a type="button" class="btn btn-outline-primary"
+                           href="{% url 'mailings:add_client' %}">Добавить</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm">
+                    <div class="card-header py-3">
+                        <h2 class="my-0 fw-normal">Сообщения</h2>
+                    </div>
+                    <div class="card-body">
+                        <h4>Создайте сообщение для рассылки</h4>
+                    </div>
+                    <div class="card-footer">
+                        <a type="button" class="btn btn-outline-primary" href="{% url 'mailings:create_message' %}">Создать</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm">
+                    <div class="card-header py-3">
+                        <h2 class="my-0 fw-normal">Рассылки</h2>
+                    </div>
+                    <div class="card-body">
+                        <h4>Всего рассылок - {{mailing_count}}</h4>
+                        <h4>Активных рассылок - {{active_mailing}}</h4>
+                    </div>
+                    <div class="card-footer">
+                        <a type="button" class="btn btn-outline-primary" href="{% url 'mailings:create_mailing' %}">Создать</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h1 class="display-4">Случайные статьи</h1>
+    </div>
+    {% for blog in random_blog_list %}
+    <div class="row mb-2">
+        <div class="col-2"></div>
+        <div class="col-md-8">
+            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col-auto d-none d-lg-block">
+                    <img src="{% mediapath blogs.image %}" width="200" height="250" class="bd-placeholder-img"
+                         alt="{{blog.title}}">
+                </div>
+                <div class="col p-4 d-flex flex-column position-static">
+                    <strong class="d-inline-block mb-2 text-primary-emphasis">{{blog.date_added}}</strong>
+                    <h3 class="mb-0">{{blog.title}}</h3>
+                    <div class="mb-1 text-body-secondary">{{blog.views_count}} просмотров</div>
+                    <p class="card-text mb-auto">{{blog.content|slice:100}}...</p>
+                    <div class="row">
+                        <div class="col-6">
+                            <a href="{% url 'blogs:view' blog.slug %}"
+                               class="icon-link gap-1 icon-link-hover stretched-link">
+                                Читать далее
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            {% if item.user == user or perms.blog.change_blog %}
+                            <div class="btn-group">
+                                <a type="button" class="btn btn-outline-primary"
+                                   href="{% url 'blogs:update' blog.slug %}">Редактировать</a>
+                                <a type="button" class="btn btn-outline-danger"
+                                   href="{% url 'blogs:delete' blog.slug %}">Удалить</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

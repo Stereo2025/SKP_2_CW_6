@@ -159,5 +159,5 @@ if CACHE_ENABLED:
 
 
 CRONJOBS = [
-       ('*/5 * * * *', 'mailings.tasks.send_emails', '>> /cron_logs/logfile.log'),
+       ('*/5 * * * *', 'mailings.sending_check.start_mailing', '>> /cron_logs/logfile.log'),
    ]

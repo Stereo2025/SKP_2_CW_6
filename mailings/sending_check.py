@@ -10,7 +10,7 @@ def start_mailing():
     now = datetime.now()
     # Объедините дату и время в datetime для корректного сравнения
     current_datetime = datetime.combine(now.date(), now.time())
-    mailing_list = Mailing.objects.filter(datetime__lte=current_datetime, status='created')
+    mailing_list = Mailing.objects.filter(date__lte=now.date(), time__lte=now.time(), status='created')
 
     for mailing in mailing_list:
         user = mailing.user

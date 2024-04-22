@@ -1,0 +1,104 @@
+In [1]: from mailings.sending_check import start_mailing
+
+In [2]: start_mailing()
+---------------------------------------------------------------------------
+FieldError                                Traceback (most recent call last)
+Cell In[2], line 1
+----> 1 start_mailing()
+
+File ~/PycharmProject/SKP_2_CW_6/mailings/sending_check.py:13, in start_mailing()
+     11 # Объедините дату и время в datetime для корректного сравнения
+     12 current_datetime = datetime.combine(now.date(), now.time())
+---> 13 mailing_list = Mailing.objects.filter(datetime__lte=current_datetime, status='created')
+     15 for mailing in mailing_list:
+     16     user = mailing.user
+
+File ~/PycharmProject/SKP_2_CW_6/venv/lib/python3.12/site-packages/django/db/models/manager.py:87, in BaseManager._get_queryset_methods.<locals>.create_method.<locals>.manager_method(self, *args, **kwargs)
+     85 @wraps(method)
+     86 def manager_method(self, *args, **kwargs):
+---> 87     return getattr(self.get_queryset(), name)(*args, **kwargs)
+
+File ~/PycharmProject/SKP_2_CW_6/venv/lib/python3.12/site-packages/django/db/models/query.py:1476, in QuerySet.filter(self, *args, **kwargs)
+   1471 """
+   1472 Return a new QuerySet instance with the args ANDed to the existing
+   1473 set.
+   1474 """
+   1475 self._not_support_combined_queries("filter")
+-> 1476 return self._filter_or_exclude(False, args, kwargs)
+
+File ~/PycharmProject/SKP_2_CW_6/venv/lib/python3.12/site-packages/django/db/models/query.py:1494, in QuerySet._filter_or_exclude(self, negate, args, kwargs)
+   1492     clone._deferred_filter = negate, args, kwargs
+   1493 else:
+-> 1494     clone._filter_or_exclude_inplace(negate, args, kwargs)
+   1495 return clone
+
+File ~/PycharmProject/SKP_2_CW_6/venv/lib/python3.12/site-packages/django/db/models/query.py:1501, in QuerySet._filter_or_exclude_inplace(self, negate, args, kwargs)
+   1499     self._query.add_q(~Q(*args, **kwargs))
+   1500 else:
+-> 1501     self._query.add_q(Q(*args, **kwargs))
+
+File ~/PycharmProject/SKP_2_CW_6/venv/lib/python3.12/site-packages/django/db/models/sql/query.py:1613, in Query.add_q(self, q_object)
+   1604 # For join promotion this case is doing an AND for the added q_object
+   1605 # and existing conditions. So, any existing inner join forces the join
+   1606 # type to remain inner. Existing outer joins can however be demoted.
+   1607 # (Consider case where rel_a is LOUTER and rel_a__col=1 is added - if
+   1608 # rel_a doesn't produce any rows, then the whole condition must fail.
+   1609 # So, demotion is OK.
+   1610 existing_inner = {
+   1611     a for a in self.alias_map if self.alias_map[a].join_type == INNER
+   1612 }
+-> 1613 clause, _ = self._add_q(q_object, self.used_aliases)
+   1614 if clause:
+   1615     self.where.add(clause, AND)
+
+File ~/PycharmProject/SKP_2_CW_6/venv/lib/python3.12/site-packages/django/db/models/sql/query.py:1645, in Query._add_q(self, q_object, used_aliases, branch_negated, current_negated, allow_joins, split_subq, check_filterable, summarize, update_join_types)
+   1641 joinpromoter = JoinPromoter(
+   1642     q_object.connector, len(q_object.children), current_negated
+   1643 )
+   1644 for child in q_object.children:
+-> 1645     child_clause, needed_inner = self.build_filter(
+   1646         child,
+   1647         can_reuse=used_aliases,
+   1648         branch_negated=branch_negated,
+   1649         current_negated=current_negated,
+   1650         allow_joins=allow_joins,
+   1651         split_subq=split_subq,
+   1652         check_filterable=check_filterable,
+   1653         summarize=summarize,
+   1654         update_join_types=update_join_types,
+   1655     )
+   1656     joinpromoter.add_votes(needed_inner)
+   1657     if child_clause:
+
+File ~/PycharmProject/SKP_2_CW_6/venv/lib/python3.12/site-packages/django/db/models/sql/query.py:1495, in Query.build_filter(self, filter_expr, branch_negated, current_negated, can_reuse, allow_joins, split_subq, check_filterable, summarize, update_join_types)
+   1493 if not arg:
+   1494     raise FieldError("Cannot parse keyword query %r" % arg)
+-> 1495 lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+   1497 if check_filterable:
+   1498     self.check_filterable(reffed_expression)
+
+File ~/PycharmProject/SKP_2_CW_6/venv/lib/python3.12/site-packages/django/db/models/sql/query.py:1307, in Query.solve_lookup_type(self, lookup, summarize)
+   1305             expression = Ref(annotation, expression)
+   1306         return expression_lookups, (), expression
+-> 1307 _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+   1308 field_parts = lookup_splitted[0 : len(lookup_splitted) - len(lookup_parts)]
+   1309 if len(lookup_parts) > 1 and not field_parts:
+
+File ~/PycharmProject/SKP_2_CW_6/venv/lib/python3.12/site-packages/django/db/models/sql/query.py:1772, in Query.names_to_path(self, names, opts, allow_many, fail_on_missing)
+   1764     if pos == -1 or fail_on_missing:
+   1765         available = sorted(
+   1766             [
+   1767                 *get_field_names_from_opts(opts),
+   (...)
+   1770             ]
+   1771         )
+-> 1772         raise FieldError(
+   1773             "Cannot resolve keyword '%s' into field. "
+   1774             "Choices are: %s" % (name, ", ".join(available))
+   1775         )
+   1776     break
+   1777 # Check if we need any joins for concrete inheritance cases (the
+   1778 # field lives in parent, but we are currently in one of its
+   1779 # children)
+
+FieldError: Cannot resolve keyword 'datetime' into field. Choices are: client, date, id, log, message, message_id, periodisity, status, time, user, user_id

@@ -8,10 +8,13 @@ from mailings.services import send_mailing
 def start_mailing():
     """Функция проверки и начала рассылок."""
     now = datetime.now()
-    # Объедините дату и время в datetime для корректного сравнения
     current_datetime = datetime.combine(now.date(), now.time())
-    mailing_list = Mailing.objects.filter(date__lte=now.date(), time__lte=now.time(), status='created')
-
+    lower_bound_time = current_datetime - timedelta(seconds=30)
+    upper_bound_time = current_datetime + timedelta(seconds=30)
+    mailing_list = Mailing.objects.filter(date__lte=now.date(),
+                                          time__gte=lower_bound_time.time(),
+                                          time__lte=upper_bound_time.time(),
+                                          status='created')
     for mailing in mailing_list:
         user = mailing.user
         mailing.status = 'started'
@@ -46,4 +49,3 @@ def start_mailing():
         )
         log.save()
         mailing.save()
-
